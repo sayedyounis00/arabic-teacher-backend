@@ -6,8 +6,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY . .
 
-# Install dependencies only if node_modules is missing
-RUN if [ ! -d "node_modules" ] || [ -z "$(ls -A node_modules 2>/dev/null)" ]; then npm ci --omit=dev; fi
+# Install dependencies using lockfile if present, otherwise npm install
+RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
 
 ENV NODE_ENV=production \
     PORT=5000
